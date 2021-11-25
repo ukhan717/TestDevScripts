@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;tempHmdTests/main.tsp&apos; to &apos;testScript.tsp&apos;" description="Rename resource &apos;main.tsp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="main.tsp" name="testScript.tsp" stamp="1637831464515" updateReferences="true"/>
-</session>
