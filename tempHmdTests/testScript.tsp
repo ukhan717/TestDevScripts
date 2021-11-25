@@ -52,31 +52,97 @@ wait(3)
 OnOff = true
 loopStartTime = refdefbuffer1.seconds[refdefbuffer1.startindex]
 print("Start Time : ", loopStartTime)
-referenceTemp = 24.5
-delayCounter = 10000000
+
+local refTemp = {
+   firstThrsh = -10,
+   secThrsh = 5,
+   thirdThrsh = 24.5, --40
+   fourthThrsh = 30 -- 50
+};
+
+local testStage = {
+   first = 1,
+   second = 2,
+   third = 3,
+   fourth = 4
+};
+currentStage = testStage.first
+
+local loopTime = 120
+local lastIndex = refdefbuffer1.n
+local tempRefChnl = "7"
+local currentChnl = 0
 
 while(true)
 do
-	
-	if refdefbuffer1.n != 0 and refdefbuffer1.readings[refdefbuffer1.n] > referenceTemp and trigger.digout[1].logic != trigger.LOGIC_NEGATIVE  then
-		print("nTempLimitExceeded : Last Reading :",refdefbuffer1.n, refdefbuffer1.readings[refdefbuffer1.n])
+	if (refdefbuffer1.n ~= 0 and refdefbuffer1.readings[refdefbuffer1.n] > refTemp.firstThrsh and trigger.digout[1].logic ~= trigger.LOGIC_NEGATIVE and currentStage == testStage.first and refdefbuffer1.channels[refdefbuffer1.n] == tempRefChnl) then
+		currentChnl = refdefbuffer1.channels[refdefbuffer1.n]
+		print("currentChnl" , refdefbuffer1.channels[refdefbuffer1.n])
+		print("\n ***********First TempLimitExceeded : Last Reading :",refdefbuffer1.n, refdefbuffer1.readings[refdefbuffer1.n])
 		trigger.digout[1].logic = trigger.LOGIC_NEGATIVE -- Turn ON
-		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.n]
-		--start = 0
-		--while(start < delayCounter)
-		--do
-			--start = start+1
+		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.endindex]
+		print("\n*** Next Start Time : ", loopStartTime)
+		print("Stage : Channel " , currentStage , refdefbuffer1.channels[refdefbuffer1.endindex])
+		currentStage = testStage.second
+		currentChnl = 0
+		--else
+			--print("1. WrongChannel : RightChannel", refdefbuffer1.channels[refdefbuffer1.n], tempRefChnl)
+		--end
+	elseif refdefbuffer1.n ~= 0 and refdefbuffer1.readings[refdefbuffer1.n] > refTemp.secThrsh and trigger.digout[1].logic ~= trigger.LOGIC_NEGATIVE and currentStage == testStage.second and refdefbuffer1.channels[refdefbuffer1.n] == tempRefChnl  then
+		currentChnl = refdefbuffer1.channels[refdefbuffer1.n]
+		--if  (currentChnl == 7)  then
+		print("currentChnl" , refdefbuffer1.channels[refdefbuffer1.n])
+		print("\n ***********Sec TempLimitExceeded : Last Reading :",refdefbuffer1.n, refdefbuffer1.readings[refdefbuffer1.n])
+		trigger.digout[1].logic = trigger.LOGIC_NEGATIVE -- Turn ON
+		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.endindex]
+		print("\n*** Next Start Time : ", loopStartTime)
+		print("Stage : Channel " , currentStage , refdefbuffer1.channels[refdefbuffer1.endindex])
+		currentStage = testStage.third
+		--else
+			--print("2. WrongChannel : RightChannel", refdefbuffer1.channels[refdefbuffer1.n], tempRefChnl)
+		--end
+	elseif refdefbuffer1.n ~= 0 and refdefbuffer1.readings[refdefbuffer1.n] > refTemp.thirdThrsh and trigger.digout[1].logic ~= trigger.LOGIC_NEGATIVE and currentStage == testStage.third and refdefbuffer1.channels[refdefbuffer1.n] == tempRefChnl then
+		currentChnl = refdefbuffer1.channels[refdefbuffer1.n]
+		--if  (currentChnl == 7)  then
+		print("currentChnl" , refdefbuffer1.channels[refdefbuffer1.n])
+		print("\n ***********Third TempLimitExceeded : Last Reading :",refdefbuffer1.n, refdefbuffer1.readings[refdefbuffer1.n])
+		trigger.digout[1].logic = trigger.LOGIC_NEGATIVE -- Turn ON
+		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.endindex]
+		print("\n*** Next Start Time : ", loopStartTime)
+		print("Stage : Channel " , currentStage , refdefbuffer1.channels[refdefbuffer1.endindex])
+		currentStage = testStage.fourth
+		--else
+			--print("3. WrongChannel : RightChannel", refdefbuffer1.channels[refdefbuffer1.n], tempRefChnl)
+		--end
+	elseif refdefbuffer1.n ~= 0 and refdefbuffer1.readings[refdefbuffer1.n] > refTemp.fourthThrsh and trigger.digout[1].logic ~= trigger.LOGIC_NEGATIVE and currentStage == testStage.fourth and refdefbuffer1.channels[refdefbuffer1.n] == tempRefChnl then
+		currentChnl = refdefbuffer1.channels[refdefbuffer1.n]
+		--if  (currentChnl == 7)  then
+		print("currentChnl" , refdefbuffer1.channels[refdefbuffer1.n])
+		print("\n ***********Fourth TempLimitExceeded : Last Reading :",refdefbuffer1.n, refdefbuffer1.readings[refdefbuffer1.n])
+		trigger.digout[1].logic = trigger.LOGIC_NEGATIVE -- Turn ON
+		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.endindex]
+		print("\n*** Next Start Time : ", loopStartTime)
+		print("Stage : Channel " , currentStage , refdefbuffer1.channels[refdefbuffer1.endindex])
+		currentStage = testStage.first
+		--else
+			--print("4. WrongChannel : RightChannel", refdefbuffer1.channels[refdefbuffer1.n], tempRefChnl)
 		--end
 	end
 	
-	if refdefbuffer1.n != 0 and refdefbuffer1.seconds[refdefbuffer1.n] > (loopStartTime + 30) then
-		trigger.digout[1].logic = trigger.LOGIC_POSITIVE
-		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.n]
-		print("\nLoop Completed Turn Off Xl3 :", refdefbuffer1.seconds[refdefbuffer1.n])		
+	if refdefbuffer1.n ~= 0 and refdefbuffer1.seconds[refdefbuffer1.endindex] > (loopStartTime + loopTime) and trigger.digout[1].logic ~= trigger.LOGIC_POSITIVE then
+		trigger.digout[1].logic = trigger.LOGIC_POSITIVE -- Turn OFF after loopTime secs
+		loopStartTime = refdefbuffer1.seconds[refdefbuffer1.endindex]
 		print("\n*** Updated Start Time : ", loopStartTime)
+		print("\nLoop Completed Turn Off Xl3 :", refdefbuffer1.seconds[refdefbuffer1.n])
 	end
 	
-	print("\nCurrent Time :" , refdefbuffer1.seconds[refdefbuffer1.n])
-	print("\nCurrent Temp :" , refdefbuffer1.readings[refdefbuffer1.n])
+	if refdefbuffer1.seconds[refdefbuffer1.n] > (loopStartTime + 25)  and (refdefbuffer1.n - lastIndex) >0 then
+		-- print("\n **** Time, Temp, Index :" , refdefbuffer1.seconds[refdefbuffer1.endindex], refdefbuffer1.readings[refdefbuffer1.endindex], refdefbuffer1.n, refdefbuffer1.endindex)
+		lastIndex = refdefbuffer1.n
+		print("Index : ", refdefbuffer1.n)
+		print("Channel : Readings", refdefbuffer1.channels[refdefbuffer1.n], refdefbuffer1.readings[refdefbuffer1.n])
+	else
+		print("\n*****\n")
+	end
 	--wait(10)
 end
