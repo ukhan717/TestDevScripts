@@ -36,8 +36,8 @@ channel.setlabel("6","XL3_1_T")
 channel.setlabel("7","XL3_2_T")
 
 -- Set up the scan; channel 2 is first available channel on a 2001-TCSCAN card.
-scan.create("1,2,5,6,7")
---scan.addsinglestep("1,2,6,5,7")
+scan.create()
+scan.addsinglestep("1,2,6,5,7")
 scan.scancount = 0  -- infinite reading
 -- Set the amount of time for each scan.
 scan.scaninterval = 3.0

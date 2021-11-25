@@ -36,13 +36,13 @@ channel.setlabel("6","XL3_1_T")
 channel.setlabel("7","XL3_2_T")
 
 -- Set up the scan; channel 2 is first available channel on a 2001-TCSCAN card.
-scan.create("1,2,5,6,7")
---scan.addsinglestep("1,2,6,5,7")
+scan.create()
+scan.addsinglestep("1,2,6,5,7")
 scan.scancount = 0  -- infinite reading
 -- Set the amount of time for each scan.
 scan.scaninterval = 3.0
 -- Write the data to a USB flash drive at the end of the scan.
-scan.export("/usb1/LogData", scan.WRITE_AFTER_SCAN, buffer.COL_ALL)
+scan.export("/usb1/TestLogs", scan.WRITE_AFTER_SCAN, buffer.COL_ALL)
 
 -- Set digio line 1 to output an indefinite external trigger.
 digio.line[1].mode= digio.MODE_TRIGGER_OPEN_DRAIN
@@ -54,10 +54,10 @@ while(true)
 do
 	trigger.digout[1].assert()
 	--printbuffer(1, defbuffer1.n, defbuffer1)
-	wait(10)
+	wait(15)
 	-- Release digio line 1.
 	trigger.digout[1].release()
-	wait(25)
+	wait(15)
 	--print("\n ScanState : ScanCount : StepCount :",scanState, scanCount, stepCount)
 	--print("\nStep Count" , scan.stepcount) 
 	--print("\nTriggering XL3\r\n")
