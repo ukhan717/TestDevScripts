@@ -36,7 +36,7 @@ channel.setlabel("7", "XL3_2_T")
 scan.create("1:2,5:7")
 scan.scancount = 0 -- infinite reading
 -- Set the amount of time for each scan. ~2mins
-scan.scaninterval = 20 -- 120.0
+scan.scaninterval = 120.0
 
 -- Write the data to a USB flash drive at the end of the scan.
 scan.export("/usb1/TestLogs_2", scan.WRITE_AFTER_SCAN, buffer.COL_ALL)
@@ -56,7 +56,7 @@ print("Start Time : ", loopStartTime)
 local refTemp = {
     firstThrsh = -10,
     secThrsh = 5,
-    thirdThrsh = 25, --40,
+    thirdThrsh = 40,
     fourthThrsh = 50
 }
 
@@ -68,7 +68,7 @@ local testStage = {
 }
 currentStage = testStage.first
 
-local loopTime = 30 --300 -- 5mins
+local loopTime = 300 -- 5mins
 local lastIndex = refdefbuffer1.n
 local tempRefChnl = "7"
 local voltRefChnl = "5"
